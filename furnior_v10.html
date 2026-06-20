@@ -2538,19 +2538,23 @@ function buildRecords() {
 
 function delInv(i) {
   if(confirm('Delete invoice ' + INV[i].id + '?')) {
+    const fsId = INV[i]._fsId;
     INV.splice(i,1);
     localStorage.setItem('f_inv', JSON.stringify(INV));
     buildRecords(); buildDash();
     toast('Invoice deleted');
+    if(window._uid && fsId) window.fsDelete('invoices', fsId).catch(e=>console.log(e));
   }
 }
 
 function delPur(i) {
   if(confirm('Delete purchase ' + PUR[i].id + '?')) {
+    const fsId = PUR[i]._fsId;
     PUR.splice(i,1);
     localStorage.setItem('f_pur', JSON.stringify(PUR));
     buildRecords(); buildDash();
     toast('Purchase deleted');
+    if(window._uid && fsId) window.fsDelete('purchases', fsId).catch(e=>console.log(e));
   }
 }
 
@@ -2854,9 +2858,11 @@ function loadBriefList() {
 
 function delBrief(i) {
   if(confirm('Delete brief ' + BRIEFS[i].id + '?')) {
+    const fsId = BRIEFS[i]._fsId;
     BRIEFS.splice(i,1);
     localStorage.setItem('f_briefs', JSON.stringify(BRIEFS));
     loadBriefList(); toast('Brief deleted');
+    if(window._uid && fsId) window.fsDelete('briefs', fsId).catch(e=>console.log(e));
   }
 }
 
