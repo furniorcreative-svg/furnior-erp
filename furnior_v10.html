@@ -2077,8 +2077,8 @@ function calcInv() {
   });
   const xVal = parseFloat(document.getElementById('inv-extra-disc').value)||0;
   const afterItem = sub - itemDisc;
-  const extra = discType==='pct' ? Math.min(afterItem, afterItem*xVal/100) : Math.min(afterItem, xVal);
-  const grand = afterItem - extra;
+  const extra = discType==='pct' ? Math.min(afterItem, afterItem*Math.min(xVal,99)/100) : Math.min(afterItem, xVal);
+  const grand = Math.max(0, afterItem - extra);
   document.getElementById('inv-subtotal').textContent   = 'Rs. ' + fmt(sub);
   document.getElementById('inv-discounts').textContent  = '− Rs. ' + fmt(itemDisc);
   document.getElementById('inv-extra-show').textContent = '− Rs. ' + fmt(extra);
@@ -2204,7 +2204,13 @@ function getPaymentInfo() {
 
 // ── SAVE INVOICE ──
 function saveInvoice() {
-  const grand = parseFloat((document.getElementById('inv-grand').textContent||'0').replace(/[^0-9.]/g,''))||0;
+  const invItems = getInvItems();
+  const invSub = invItems.reduce((a,b)=>a+b.gross,0);
+  const invIDisc = invItems.reduce((a,b)=>a+b.disc,0);
+  const invAfter = invSub - invIDisc;
+  const xv = parseFloat(document.getElementById('inv-extra-disc').value)||0;
+  const invExtra = discType==='pct' ? Math.min(invAfter, invAfter*Math.min(xv,99)/100) : Math.min(invAfter, xv);
+  const grand = Math.max(0, invAfter - invExtra);
   const pay = getPaymentInfo();
   let status = 'due';
   if(pay.method === 'credit') status = 'credit';
